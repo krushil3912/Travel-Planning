@@ -70,7 +70,7 @@ exports.bookingUpdate = async function (req, res, next) {
     try {
 
         let id = req.params.id
-        let bookingData = await BOOKING.findByIdAndUpdate(id,req,body,{new : true})
+        let bookingData = await BOOKING.findByIdAndUpdate(id,req.body,{new : true})
 
         bookingData = await BOOKING.find().populate([
             { path: 'userId' },
