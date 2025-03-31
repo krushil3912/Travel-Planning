@@ -3,15 +3,9 @@ let Schema = mongoose.Schema
 
 let destinationSchema = new Schema({
     subdestination:{
-        inIndia:{
-            type : [String]
-        },
-        asiaCountries:{
-            type : [String]
-        },
-        europeCountries:{
-            type : [String]
-        }
+       type : String,
+       enum : ['InIndia','Europ Country','Asian Country'],
+       required : [true,'InIndia, Europ Country, Asian Country']
     },
   
 })
