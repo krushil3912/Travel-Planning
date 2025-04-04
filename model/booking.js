@@ -12,16 +12,22 @@ let bookingSchema = new Schema ({
         ref : 'itinerary',
         required : [true,"Please Enter EventId"]
     },
-    date : {
-        type : String,
-        required : [true,"please Enter Date"]
-    },
+    bookingDate: {
+        type: Date,
+        required: [true,'Please Enter Date'],
+        validate: {
+          validator: function(value) {
+            return value > new Date(); // Ensures the date is in the future
+          },
+          message: 'Booking date must be in the future!'
+        }
+      },
     paymentStatus : {
         type : String,
         enum :['pending..','paid'],
         default : 'pending..'
     }
-})
+});
 
 let BOOKING = mongoose.model('booking',bookingSchema)
 module.exports = BOOKING

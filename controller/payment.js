@@ -13,12 +13,13 @@ exports.createPayment = async function (req, res, next) {
                 message: "User not found."
             });
         }
-        if (user) {
-            return res.status(404).json({
-                status: "fail",
-                message: "Your Payment is Already Done."
-            });
-        }
+        // let booking = await BOOKING.findById(req.body.bookingId);
+        // if (booking) {
+        //     return res.status(404).json({
+        //         status: "fail",
+        //         message: "Your Payment is Already Done."
+        //     });
+        // }
 
         const booking = await BOOKING.findById(req.body.bookingId);
         if (!booking) {
@@ -33,12 +34,6 @@ exports.createPayment = async function (req, res, next) {
         // console.log("itinerary ==> ",Number(itinerary.packagePrice))
 
         // console.log("req.body.amount ==> ",Number(req.body.amount))
-        if (!itinerary) {
-            return res.status(404).json({
-                status: "fail",
-                message: "Itinerary not found."
-            });
-        }
 
         if (req.body.amount !== itinerary.packagePrice) {
             return res.status(400).json({
@@ -100,7 +95,6 @@ exports.viewAllPayments = async function (req, res, next) {
     try {
         const payments = await PAYMENT.find()
             .populate('userId')
-            .populate('itineraryId')
             .populate('bookingId')
             .exec();
 
@@ -128,7 +122,6 @@ exports.viweOnePayment = async function (req, res, next) {
     try {
         const payment = await PAYMENT.findById(req.params.id)
             .populate('userId')
-            .populate('Id')
             .populate('bookingId')
             .exec();
 

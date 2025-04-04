@@ -2,11 +2,6 @@ let mongoose = require('mongoose')
 let Shcema = mongoose.Schema
 
 let activitySchema = new mongoose.Schema({
-    destinationId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'destination',
-        required: true,
-    },
     itineraryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'itinerary',

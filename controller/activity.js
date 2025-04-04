@@ -33,9 +33,7 @@ exports.activityCreate = async function (req,res,next) {
 exports.activityFindAll = async function (req,res,next) {
     try {
         
-        let activityData = await ACTIVITY.find().populate([ 
-            { path: 'destinationId'},
-            { path: 'itineraryId' }])
+        let activityData = await ACTIVITY.find().populate('itineraryId')
 
         if (activityData.length == 0) {
             throw new Error("Activity Data Not Exist");

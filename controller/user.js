@@ -26,13 +26,32 @@ async function main(mail) {
 
 exports.userSignup = async function (req, res, next) {
     try {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        const { email, password } = req.body;
+
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Please enter a valid Gmail address (must end with @gmail.com)."
+            });
+        }
+
         let findEmail = await USER.findOne({ email: req.body.email })
         if (findEmail) {
             throw new Error("User Already Exists");
         }
+
+        const passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character."
+            });
+        }
+
         req.body.password = await bcrypt.hash(req.body.password, 10)
 
-        let userData = await USER.create(req.body)
+        const userData = await USER.create({ ...req.body, password: hashedPassword });
 
         await main(userData.email) // Mail sending
         res.status(201).json({

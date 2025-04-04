@@ -11,10 +11,14 @@ exports.adminSignup = async function (req,res,next) {
         req.body.password = bcrypt.hashSync(req.body.password, 10)
 
         let adminData = await ADMIN.create(req.body)
+
+        let token = jwt.sign({id:adminData._id},'SECURE')
+
         res.status(201).json({
             status : "Success",
             message :"Admin Singup Successfully",
-            data : adminData
+            data : adminData,
+            token
         })
     } catch (error) {
         res.status(404).json({
@@ -37,13 +41,10 @@ exports.adminLogin = async function (req,res,next) {
             throw new Error("Invalid Password");
         }
 
-        let token = jwt.sign({id:adminData._id},'SECURE')
-
         res.status(201).json({
             status : "Success",
             message :"Admin Login Successfully",
-            data : adminData,
-            token
+            data : adminData
         })
     } catch (error) {
         res.status(404).json({
