@@ -12,7 +12,7 @@ exports.adminSignup = async function (req,res,next) {
 
         let adminData = await ADMIN.create(req.body)
 
-        let token = jwt.sign({id:adminData._id},'SECURE')
+        let token = jwt.sign({id:adminData._id},process.env.SECURE_KEY)
 
         res.status(201).json({
             status : "Success",

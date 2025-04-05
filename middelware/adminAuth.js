@@ -9,7 +9,7 @@ exports.Auth = async function (req,res,next) {
         // console.log(token);
         if (!token) throw new Error("Please Attech Token");
 
-        let tokenVarify = jwt.verify(token,'SECURE')
+        let tokenVarify = jwt.verify(token,process.env.SECURE_KEY)
         // console.log(tokenVarify);
         if(!tokenVarify) throw new Error("Please Enter Valid Token");
 
