@@ -98,7 +98,7 @@ exports.bookingSearch = async function (req, res, next) {
         if (searchQuery) {
             bookingData = await BOOKING.find({
                 $or: [
-                    { date: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
+                    { bookingDate: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
                 ]
             });
         } else {
