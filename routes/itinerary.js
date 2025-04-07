@@ -27,6 +27,7 @@ const upload = multer({ storage: storage });
 router.post('/createData', upload.array('Images',3) , itineraryController.itineraryCreate)
 router.get('/find/',itineraryController.itineraryFindAll)
 router.get('/findone/:id',itineraryController.itineraryFindOne)
+router.get('/search',itineraryController.itinerarySearch)
 router.delete('/delete/:id',adminAuth.Auth,itineraryController.itineraryDelete)
 router.patch('/update/:id',adminAuth.Auth,itineraryController.itineraryUpdate)
 

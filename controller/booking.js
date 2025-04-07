@@ -92,7 +92,7 @@ exports.bookingUpdate = async function (req, res, next) {
 
 exports.bookingSearch = async function (req, res, next) {
     try {
-        let searchQuery = req.query.q; // Extract query parameter
+        let searchQuery = req.query.q?.trim(); // Extract query parameter
         let bookingData;
 
         if (searchQuery) {

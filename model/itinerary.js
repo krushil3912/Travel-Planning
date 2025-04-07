@@ -10,7 +10,7 @@ let itinerarySchema = new Schema ({
     countryName:{
         type: String,
         trim : true,
-        required :[true,'Please Enter countryName']
+        required :[true,'Please Enter Country Name']
     },
     detail:{
         type: String,

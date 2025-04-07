@@ -116,3 +116,32 @@ exports.itineraryUpdate = async function (req, res, next) {
         })
     }
 }
+
+
+exports.itinerarySearch = async function (req, res, next) {
+    try {
+        let searchQuery = req.query.q?.trim(); // Extract query parameter
+        let itineraryData;
+
+        if (searchQuery) {
+            itineraryData = await ITINERARY.find({
+                $or: [
+                    { countryName: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
+                ]
+            });
+        } else {
+            itineraryData = await ITINERARY.find();
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Your Eevnt was found successfully",
+            data: itineraryData
+        })
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+}
