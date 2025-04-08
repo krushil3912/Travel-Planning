@@ -1,38 +1,58 @@
 let ITINERARY = require('../model/itinerary')
 let DESTINATION = require('../model/destination')
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
+const mongoose = require('mongoose');
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET
+});
 
 exports.itineraryCreate = async function (req, res, next) {
-
-    // console.log("check function");
-    
     try {
-        const { destinationId } = req.body
+        const { destinationId } = req.body;
 
-        // console.log("destinationId ==> ",destinationId);
-        
-
+        // Check Destination Exist or Not
         let destination = await DESTINATION.findById(destinationId)
         if (!destination) {
             throw new Error("Destination Not Found");
         }
 
-        const data = req.body
-        
-        if (req.files && req.files.length > 0) {
-            const fileNames = req.files.map(file => file.filename);
-            data.Images = fileNames;
+        const data = {
+            destinationId: newmongoose.Types.ObjectId(destinationId),  // convert to ObjectId
+            countryName: req.body.countryName,
+            detail: req.body.detail,
+            packagePrice: req.body.packagePrice,
         }
-        console.log(data);
-        
-        let itineraryData = await ITINERARY.create(req.body)
-        console.log(itineraryData);
-        
+
+        // Upload Images to Cloudinary
+        if (req.files && req.files.length > 0) {
+            const uploadedImages = [];
+
+            for (const file of req.files) {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: 'itinerary_Images'
+                });
+                uploadedImages.push(result.secure_url);
+                fs.unlinkSync(file.path);  // delete local file
+            }
+
+            data.Images = uploadedImages;
+        }
+
+        // Create Itinerary Data
+        let itineraryData = await ITINERARY.create(data)
+
         res.status(201).json({
             status: 'Success',
-            message: 'Itinerary Create Successfully',
+            message: 'Itinerary Created Successfully',
             data: itineraryData
         })
+
     } catch (error) {
+        console.log("Error ===>", error);
         res.status(404).json({
             status: 'Fail',
             message: error.message
@@ -101,6 +121,54 @@ exports.itineraryDelete = async function (req, res, next) {
 
 exports.itineraryUpdate = async function (req, res, next) {
     try {
+        let id = req.params.id
+
+        let itineraryData = await ITINERARY.findByIdAndUpdate(id, req.body, { new: true }).populate('destinationId')
+        res.status(200).json({
+            status: 'Success',
+            message: 'Itinerary Update Successfully',
+            data: itineraryData
+        })
+    } catch (error) {
+        res.status(404).json({
+            status: 'Fail',
+            message: error.message
+        })
+    }
+}
+
+exports.itineraryUpdate = async function (req, res, next) {
+    try {
+        const { destinationId } = req.body;
+
+        // Check Destination Exist or Not
+        let destination = await DESTINATION.findById(destinationId)
+        if (!destination) {
+            throw new Error("Destination Not Found");
+        }
+
+        const data = {
+            destinationId: newmongoose.Types.ObjectId(destinationId),  // convert to ObjectId
+            countryName: req.body.countryName,
+            detail: req.body.detail,
+            packagePrice: req.body.packagePrice,
+        }
+
+        // Upload Images to Cloudinary
+        if (req.files && req.files.length > 0) {
+            const uploadedImages = [];
+
+            for (const file of req.files) {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: 'itinerary_Images'
+                });
+                uploadedImages.push(result.secure_url);
+                fs.unlinkSync(file.path);  // delete local file
+            }
+
+            data.Images = uploadedImages;
+        }
+
         let id = req.params.id
 
         let itineraryData = await ITINERARY.findByIdAndUpdate(id, req.body, { new: true }).populate('destinationId')
