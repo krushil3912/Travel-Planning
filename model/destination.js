@@ -3,9 +3,9 @@ let Schema = mongoose.Schema
 
 let destinationSchema = new Schema({
     destination:{
-       type : String,
-       enum : ['InIndia','Europ Country','Asian Country'],
-       required : [true,'InIndia, Europ Country, Asian Country']
+       type : [String],
+       trim : true,
+       required : [true,'Please Enter Destintion']
     }
 })
 

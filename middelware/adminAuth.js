@@ -16,7 +16,6 @@ exports.Auth = async function (req,res,next) {
         let adminVerify = await ADMIN.findById(tokenVarify.id)
         if (!adminVerify) {
             throw new Error("Admin Not Found");
-            
         }
         next()
     } catch (error) {

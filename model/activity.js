@@ -2,17 +2,17 @@ let mongoose = require('mongoose')
 let Shcema = mongoose.Schema
 
 let activitySchema = new mongoose.Schema({
-    itineraryId: {
+    destinationId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'itinerary',
+        ref: 'destination',
+        required: [true, 'Please Enter Destination Id']
+    },
+    sightseeingIncluded: {
+        type: [String],
         required: true,
     },
-    description: {
-        type: String,
-        required: true,
-    },
-    duration: {
-        type: String,
+    packageIncludes: {
+        type: [String],
         required: true,
     }
 })

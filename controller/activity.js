@@ -1,16 +1,16 @@
 let ACTIVITY = require('../model/activity')
-let ITINERARY = require('../model/itinerary')
+let DESTINATION = require('../model/destination')
 
 exports.activityCreate = async function (req,res,next) {
     try {
-        const {itineraryId} = req.body
+        const {destinationId} = req.body
 
-        let itinerary = await ITINERARY.findById(itineraryId)
-        if (!itinerary) {
-            throw new Error("Itinerary Not Found");
+        let destination = await DESTINATION.findById(destinationId)
+        if (!destination) {
+            throw new Error("Destination Not Found");
         }
 
-        let existItinerary = await ACTIVITY.findOne({itineraryId})
+        let existItinerary = await ACTIVITY.findOne({destinationId})
         if (existItinerary) {
          throw new Error("Itinerary Already Exist");
         }
@@ -33,7 +33,7 @@ exports.activityCreate = async function (req,res,next) {
 exports.activityFindAll = async function (req,res,next) {
     try {
         
-        let activityData = await ACTIVITY.find().populate('itineraryId')
+        let activityData = await ACTIVITY.find().populate('destinationId')
 
         if (activityData.length == 0) {
             throw new Error("Activity Data Not Exist");
@@ -54,9 +54,7 @@ exports.activityFindAll = async function (req,res,next) {
 exports.activityFindOne = async function (req,res,next) {
     try {
         let id = req.params.id
-        let activityData = await ACTIVITY.findById(id).populate([ 
-            { path: 'destinationId'},
-            { path: 'itineraryId' }])
+        let activityData = await ACTIVITY.findById(id).populate('destinationId')
 
         if (!activityData) {
             throw new Error("Activity Data Not Found");
@@ -96,9 +94,7 @@ exports.activityDelete = async function (req,res,next) {
 exports.activityUpdate = async function (req,res,next) {
     try {
         let id = req.params.id
-        let activityData = await ACTIVITY.findByIdAndUpdate(id,req.body,{new : true}).populate([ 
-            { path: 'destinationId'},
-            { path: 'itineraryId' }])
+        let activityData = await ACTIVITY.findByIdAndUpdate(id,req.body,{new : true}).populate('destinationId')
 
         if (!activityData) {
             throw new Error("Activity Not Found");

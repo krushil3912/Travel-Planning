@@ -7,7 +7,7 @@ let adminAuth = require('../middelware/adminAuth')
 
 router.post('/signup', userController.userSignup)
 router.post('/login', userController.userLogin)
-router.get('/find', userController.userFindAll)
+router.get('/find', adminAuth.Auth,userController.userFindAll)
 router.get('/delete/:id',adminAuth.Auth,userController.userDelete)
 router.patch('/update/:id',adminAuth.Auth,userController.userUpdate)
 

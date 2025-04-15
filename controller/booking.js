@@ -3,7 +3,23 @@ let USER = require('../model/user')
 
 exports.bookingCreate = async function (req, res, next) {
     try {
-        const {userId} = req.body
+        const { contactNo, email, userId} = req.body;
+
+        // Validate required fields
+        if (!contactNo) {
+            return res.status(400).json({
+                status: 'Fail',
+                message: 'Please provide all required fields: Phone No.'
+            });
+        }
+
+        if (!email) {
+            return res.status(400).json({
+                status: 'Fail',
+                message: 'Please provide all required fields: E-mail'
+            });
+        }
+
         let user = await BOOKING.findOne({userId: userId})
         if (user) {
             throw new Error("This User Can Already Booked The Tour");       
@@ -28,7 +44,7 @@ exports.bookingFindAll = async function (req, res, next) {
 
         let bookingData = await BOOKING.find().populate([
             { path: 'userId' },
-            { path: 'itineraryId' }
+            { path: 'destinationId' }
         ])
 
         res.status(200).json({
@@ -74,7 +90,7 @@ exports.bookingUpdate = async function (req, res, next) {
 
         bookingData = await BOOKING.find().populate([
             { path: 'userId' },
-            { path: 'eventId' }
+            { path: 'destinationId' }
         ])
 
         res.status(200).json({

@@ -1,6 +1,7 @@
 let bcrypt = require('bcrypt')
 let USER = require('../model/user')
 let nodemailer = require('nodemailer')
+let jwt = require('jsonwebtoken')
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -41,7 +42,7 @@ exports.userSignup = async function (req, res, next) {
             throw new Error("User Already Exists");
         }
 
-        const passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(password)) {
             return res.status(400).json({
                 status: "fail",
@@ -49,15 +50,18 @@ exports.userSignup = async function (req, res, next) {
             });
         }
 
-        req.body.password = await bcrypt.hash(req.body.password, 10)
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const userData = await USER.create({ ...req.body, password: hashedPassword });
 
         await main(userData.email) // Mail sending
+
+        let token = jwt.sign({id:userData._id},process.env.SECURE_KEY)
         res.status(201).json({
             status: "Success",
             message: "User Signup Successfully",
-            data: userData
+            data: userData,
+            token
         })
     } catch (error) {
         res.status(404).json({

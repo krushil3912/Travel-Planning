@@ -1,14 +1,14 @@
 let ITINERARY = require('../model/itinerary')
 let DESTINATION = require('../model/destination')
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
+// const cloudinary = require('cloudinary').v2;
+// const fs = require('fs');
 const mongoose = require('mongoose');
 
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_API_SECRET
-});
+// cloudinary.config({
+//     cloud_name: process.env.CLOUD_NAME,
+//     api_key: process.env.CLOUD_API_KEY,
+//     api_secret: process.env.CLOUD_API_SECRET
+// });
 
 exports.itineraryCreate = async function (req, res, next) {
     try {
@@ -21,26 +21,25 @@ exports.itineraryCreate = async function (req, res, next) {
         }
 
         const data = {
-            destinationId: newmongoose.Types.ObjectId(destinationId),  // convert to ObjectId
-            countryName: req.body.countryName,
-            detail: req.body.detail,
+            destinationId: new mongoose.Types.ObjectId(destinationId),  // convert to ObjectId
+            days: req.body.days,
             packagePrice: req.body.packagePrice,
         }
 
         // Upload Images to Cloudinary
-        if (req.files && req.files.length > 0) {
-            const uploadedImages = [];
+        // if (req.files && req.files.length > 0) {
+        //     const uploadedImages = [];
 
-            for (const file of req.files) {
-                const result = await cloudinary.uploader.upload(file.path, {
-                    folder: 'itinerary_Images'
-                });
-                uploadedImages.push(result.secure_url);
-                fs.unlinkSync(file.path);  // delete local file
-            }
+        //     for (const file of req.files) {
+        //         const result = await cloudinary.uploader.upload(file.path, {
+        //             folder: 'itinerary_Images'
+        //         });
+        //         uploadedImages.push(result.secure_url);
+        //         fs.unlinkSync(file.path);  // delete local file
+        //     }
 
-            data.Images = uploadedImages;
-        }
+        //     data.Images = uploadedImages;
+        // }
 
         // Create Itinerary Data
         let itineraryData = await ITINERARY.create(data)
@@ -52,7 +51,7 @@ exports.itineraryCreate = async function (req, res, next) {
         })
 
     } catch (error) {
-        console.log("Error ===>", error);
+        // console.log("Error ===>", error);
         res.status(404).json({
             status: 'Fail',
             message: error.message
