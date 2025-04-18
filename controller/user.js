@@ -21,7 +21,7 @@ async function main(mail) {
         to: mail, // list of receivers
         subject: "Event Management", // Subject line
         // text: "Hello Welcome to my event management site we can provide best and beautiful location and beautiful decoration for your event !!", // plain text body
-        html: "<b>We Can Provide To You Best Deal For Your Events 🤑</b>", // html body
+        html: "<b>We Can Provide To You Best Traveling Trip in Best Packege Price 🤑</b>", // html body
     });
 }
 
