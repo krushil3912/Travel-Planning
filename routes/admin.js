@@ -5,7 +5,7 @@ let adminAuth = require('../middelware/adminAuth')
 
 
 /* GET Admin page. */
-router.post('/singup', adminController.adminSignup)
+router.post('/signup', adminController.adminSignup)
 router.post('/login', adminController.adminLogin)
 router.get('/find',adminAuth.Auth, adminController.adminFindAll)
 router.get('/findone/:id',adminController.adminFindOne)
