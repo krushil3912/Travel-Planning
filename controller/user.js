@@ -53,6 +53,8 @@ exports.userSignup = async function (req, res, next) {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const userData = await USER.create({ ...req.body, password: hashedPassword });
+        console.log(userData);
+        
 
         await main(userData.email) // Mail sending
 
