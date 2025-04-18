@@ -15,8 +15,6 @@ require('dotenv').config()
 //   .catch((error) => console.log(error.message))
 
 mongoose.connect(process.env.DB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 30000,  // Increase timeout to 30 seconds
 })
   .then(() => console.log('Connected!'))
