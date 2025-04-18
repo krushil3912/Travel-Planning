@@ -3,27 +3,27 @@ let USER = require('../model/user')
 let nodemailer = require('nodemailer')
 let jwt = require('jsonwebtoken')
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for port 465, false for other ports
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
+// const transporter = nodemailer.createTransport({
+//     host: "smtp.gmail.com",
+//     port: 587,
+//     secure: false, // true for port 465, false for other ports
+//     auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//     },
+// });
 
-async function main(mail) {
+// async function main(mail) {
 
-    // send mail with defined transport object
-    const info = await transporter.sendMail({
-        from: 'dhameliyakrushil2023@gmail.com', // sender address
-        to: mail, // list of receivers
-        subject: "Event Management", // Subject line
-        // text: "Hello Welcome to my event management site we can provide best and beautiful location and beautiful decoration for your event !!", // plain text body
-        html: "<b>We Can Provide To You Best Traveling Trip in Best Packege Price 🤑</b>", // html body
-    });
-}
+//     // send mail with defined transport object
+//     const info = await transporter.sendMail({
+//         from: 'dhameliyakrushil2023@gmail.com', // sender address
+//         to: mail, // list of receivers
+//         subject: "Event Management", // Subject line
+//         // text: "Hello Welcome to my event management site we can provide best and beautiful location and beautiful decoration for your event !!", // plain text body
+//         html: "<b>We Can Provide To You Best Traveling Trip in Best Packege Price 🤑</b>", // html body
+//     });
+// }
 
 exports.userSignup = async function (req, res, next) {
     try {
@@ -56,7 +56,7 @@ exports.userSignup = async function (req, res, next) {
         console.log(userData);
         
 
-        await main(userData.email) // Mail sending
+        // await main(userData.email) // Mail sending
 
         let token = jwt.sign({id:userData._id},process.env.SECURE_KEY)
         res.status(201).json({
