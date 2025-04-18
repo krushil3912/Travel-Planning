@@ -14,9 +14,7 @@ require('dotenv').config()
 //   .then(() => console.log('Connected!'))
 //   .catch((error) => console.log(error.message))
 
-mongoose.connect(process.env.DB_URL, {
-  serverSelectionTimeoutMS: 30000,  // Increase timeout to 30 seconds
-})
+mongoose.connect('mongodb+srv://dhameliyakrushil2023:RWi3AdQUquNeI4uB@travelplanning.ngkqnvm.mongodb.net/?retryWrites=true&w=majority&appName=TravelPlanning')
   .then(() => console.log('Connected!'))
   .catch((error) => console.log(error.message));
 
