@@ -6,9 +6,21 @@ var logger = require('morgan');
 const mongoose = require('mongoose');
 require('dotenv').config()
 
-mongoose.connect(process.env.DB_URL)
+// mongoose.connect(process.env.DB_URL, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useCreateIndex: true,
+// })
+//   .then(() => console.log('Connected!'))
+//   .catch((error) => console.log(error.message))
+
+mongoose.connect(process.env.DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 30000,  // Increase timeout to 30 seconds
+})
   .then(() => console.log('Connected!'))
-  .catch((error) => console.log(error.message))
+  .catch((error) => console.log(error.message));
 
 var indexRouter = require('./routes/index');
 var adminRouter = require('./routes/admin');
@@ -45,12 +57,12 @@ app.use('/feedback', feedbackRouter);
 app.use('/payment', paymentRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
