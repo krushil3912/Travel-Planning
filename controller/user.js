@@ -1,29 +1,6 @@
 let bcrypt = require('bcrypt')
 let USER = require('../model/user')
-let nodemailer = require('nodemailer')
 let jwt = require('jsonwebtoken')
-
-// const transporter = nodemailer.createTransport({
-//     host: "smtp.gmail.com",
-//     port: 587,
-//     secure: false, // true for port 465, false for other ports
-//     auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS,
-//     },
-// });
-
-// async function main(mail) {
-
-//     // send mail with defined transport object
-//     const info = await transporter.sendMail({
-//         from: 'dhameliyakrushil2023@gmail.com', // sender address
-//         to: mail, // list of receivers
-//         subject: "Event Management", // Subject line
-//         // text: "Hello Welcome to my event management site we can provide best and beautiful location and beautiful decoration for your event !!", // plain text body
-//         html: "<b>We Can Provide To You Best Traveling Trip in Best Packege Price 🤑</b>", // html body
-//     });
-// }
 
 exports.userSignup = async function (req, res, next) {
     try {
@@ -53,12 +30,10 @@ exports.userSignup = async function (req, res, next) {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const userData = await USER.create({ ...req.body, password: hashedPassword });
-        console.log(userData);
-        
+        // console.log(userData);
 
-        // await main(userData.email) // Mail sending
+        let token = jwt.sign({id:userData._id},process.env.USER_SECURE_KEY)
 
-        let token = jwt.sign({id:userData._id},process.env.SECURE_KEY)
         res.status(201).json({
             status: "Success",
             message: "User Signup Successfully",

@@ -4,10 +4,10 @@ let jwt = require('jsonwebtoken')
 
 exports.adminSignup = async function (req,res,next) {
     try {
-        // let findEmail = await ADMIN.findOne({email:req.body.email})
-        // if (findEmail) {
-        //     throw new Error("Admin Already Exists");
-        // }
+        let findEmail = await ADMIN.findOne({email:req.body.email})
+        if (findEmail) {
+            throw new Error("Admin Already Exists");
+        }
         req.body.password = bcrypt.hashSync(req.body.password, 10)
 
         let adminData = await ADMIN.create(req.body)
