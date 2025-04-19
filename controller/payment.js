@@ -1,7 +1,7 @@
 let nodemailer = require('nodemailer');
 let PAYMENT = require('../model/payment');
 let BOOKING = require('../model/booking');
-let ITINERARY = require('../model/itinerary');
+let DESTINATION = require('../model/destination')
 let USER = require('../model/user');
 
 exports.createPayment = async function (req, res, next) {
@@ -29,16 +29,12 @@ exports.createPayment = async function (req, res, next) {
             });
         }
 
-        const itinerary = await ITINERARY.findById(booking.itineraryId);
+        const destination = await DESTINATION.findById(booking.destinationId);
 
-        // console.log("itinerary ==> ",Number(itinerary.packagePrice))
-
-        // console.log("req.body.amount ==> ",Number(req.body.amount))
-
-        if (req.body.amount !== itinerary.packagePrice) {
+        if (req.body.amount !== destination.packagePrice) {
             return res.status(400).json({
                 status: "fail",
-                message: `Amount entered (₹${req.body.amount}) does not match the Tour price (₹${itinerary.packagePrice}).`
+                message: `Amount entered (₹${req.body.amount}) does not match the Tour price (₹${destination.packagePrice}).`
             });
         }
 
@@ -180,19 +176,6 @@ exports.updatePayment = async function (req, res, next) {
                 message: "Payment not found."
             });
         }
-
-        if (req.body.amount) {
-            const itinerary = await ITINERARY.findById(payment.itineraryId);
-            if ((req.body.amount) !== (itinerary.packagePrice)) {
-                return res.status(400).json({
-                    status: "fail",
-                    message: `Amount entered (₹${req.body.amount}) does not match the event price (₹${itinerary.packagePrice}).`
-                });
-            }
-        }
-
-        Object.assign(payment, req.body);
-        await payment.save();
 
         res.status(200).json({
             status: "success",

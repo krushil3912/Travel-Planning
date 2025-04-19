@@ -21,11 +21,6 @@ let feedbackSchema = new Schema ({
         type : mongoose.Schema.Types.ObjectId,
         required : [true,"Please Enter EventId"],
         ref : "destination"
-    },
-    itineraryId :{
-        type : mongoose.Schema.Types.ObjectId,
-        required : [true,"Please Enter EventId"],
-        ref : "itinerary"
     }
 })
 

@@ -11,12 +11,6 @@ let itinerarySchema = new Schema ({
         type: [String],
         trim : true,
         required :[true,'Please Enter Days Details']
-    },
-    
-    packagePrice:{
-        type: String,
-        trim: true,
-        required :[true,'Please Enter Package Price']
     }
 })
 
