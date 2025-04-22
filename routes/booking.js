@@ -5,7 +5,6 @@ let bookingController = require('../controller/booking')
 /* GET home page. */
 router.post('/create',bookingController.bookingCreate)
 router.get('/find',bookingController.bookingFindAll)
-router.get('/search',bookingController.bookingSearch)
 router.delete('/delete/:id',bookingController.bookingDelete)
 router.patch('/update/:id',bookingController.bookingUpdate)
 

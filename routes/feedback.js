@@ -6,6 +6,7 @@ let feedbackController = require('../controller/feedback')
 
 router.post("/create",feedbackController.feedbackCreate)
 router.get("/find",feedbackController.feedbackFind)
+router.patch("/update/:id",feedbackController.feedbackUpdate)
 
 
 

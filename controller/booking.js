@@ -105,31 +105,3 @@ exports.bookingUpdate = async function (req, res, next) {
         });
     }
 }
-
-exports.bookingSearch = async function (req, res, next) {
-    try {
-        let searchQuery = req.query.q?.trim(); // Extract query parameter
-        let bookingData;
-
-        if (searchQuery) {
-            bookingData = await BOOKING.find({
-                $or: [
-                    { bookingDate: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
-                ]
-            });
-        } else {
-            bookingData = await BOOKING.find();
-        }
-
-        res.status(200).json({
-            status: "Success",
-            message: "Your Eevnt was found successfully",
-            data: bookingData
-        })
-    } catch (error) {
-        res.status(500).json({
-            status: "Fail",
-            message: error.message
-        });
-    }
-}
