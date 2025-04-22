@@ -12,7 +12,7 @@ let paymentSchema = new Schema({
         ref: 'booking',
         required: [true, "Please Enter Event Id"]
     },
-    amount: {
+    amount: { 
         type: String,
         required: [true, 'Please Enter Amount']
     },
