@@ -16,7 +16,9 @@ let userSchema = new Schema({
         type : String,
         trim : true,
         unique : true,
-        required :[true,"Please Enter Email"]
+        lowercase : true,
+        required :[true,"Please Enter Email"],
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please Enter a valid email address']
     },
     password : {
         type : String,

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-let imageController = require('../controller/gallery')
+let placeController = require('../controller/place')
 const multer = require('multer');
 const path = require('path');
 
@@ -18,10 +18,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-router.post('/create', upload.array('Images', 100), imageController.imagesCreate)
-router.get('/find', imageController.imagesFindAll)
-router.get('/findone/:id', imageController.imagesFindOne)
-router.delete('/delete/:id',imageController.imagesDelete)
-router.patch('/update/:id',upload.array('Images', 100),imageController.imagesUpdate)
+router.post('/create', upload.array('Images', 100), placeController.placeCreate)
+router.get('/find', placeController.placeFindAll)
+router.patch('/:id',  upload.array('Images', 100), placeController.placeUpdate)
+// router.delete('/delete/:id',placeController.placeDelete)
 
 module.exports = router;

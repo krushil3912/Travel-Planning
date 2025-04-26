@@ -24,7 +24,7 @@ exports.imagesCreate = async (req, res) => {
             imageUrls = await Promise.all(uploadPromises);
         }
 
-        const imageEntry = await IMAGES.create({ 
+        const imageEntry = await IMAGES.create({
             Images: imageUrls,
             destinationId
         });
@@ -107,12 +107,14 @@ exports.imagesDelete = async (req, res) => {
 // Update Image
 exports.imagesUpdate = async (req, res) => {
     try {
-        const id = req.params.id;
-
-        const updatedImage = await IMAGES.findByIdAndUpdate(id, req.body, { new: true }).populate('destinationId');
+        
+        const updatedImage = await IMAGES.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('destinationId');
 
         if (!updatedImage) {
-            return res.status(404).json({ status: 'Fail', message: 'Image Not Found' });
+            return res.status(404).json({
+                status: 'Fail',
+                message: 'Image Not Found'
+            });
         }
 
         res.status(200).json({
@@ -125,3 +127,4 @@ exports.imagesUpdate = async (req, res) => {
         res.status(500).json({ status: 'Fail', message: error.message });
     }
 };
+
