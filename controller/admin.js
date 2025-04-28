@@ -29,8 +29,7 @@ exports.adminSignup = async function (req,res,next) {
             });
         }
 
-        req.body.password = bcrypt.hashSync(req.body.password, 10)
-
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
         let adminData = await ADMIN.create({ ...req.body, password: hashedPassword });
 
         let token = jwt.sign({id:adminData._id},process.env.SECURE_KEY)
