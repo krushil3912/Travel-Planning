@@ -7,7 +7,7 @@ let adminAuth = require('../middelware/adminAuth')
 router.post('/create',destinationController.create)
 router.get('/find',destinationController.destinationfindAll)
 router.get('/findone/:id',destinationController.destinationfindOne)
-router.delete('delete/:id',adminAuth.Auth,destinationController.destinationDelete)
-router.patch('update/:id',adminAuth.Auth,destinationController.destinationUpdate)
+router.delete('/delete/:id',adminAuth.Auth,destinationController.destinationDelete)
+router.patch('/update/:id',adminAuth.Auth,destinationController.destinationUpdate)
 
 module.exports = router;

@@ -23,7 +23,6 @@ exports.placeCreate = async function (req, res) {
         if (req.files && req.files.length > 0) {
             const uploadPromises = req.files.map(async (file) => {
                 const result = await cloudinary.uploader.upload(file.path, { folder: 'place' });
-                fs.unlinkSync(file.path); // Delete local file after upload
                 return result.secure_url;
             });
 
@@ -81,22 +80,45 @@ exports.placeFindAll = async function (req, res, next) {
 }
 
 exports.placeUpdate = async (req, res) => {
+    console.log("=======");
+    
     try {
         const { destinationId } = req.body;
         console.log(req.body);
         
         let imageUrls = [];
 
+        console.log("check");
         if (req.files && req.files.length > 0) {
             const uploadPromises = req.files.map(async (file) => {
-                const result = await cloudinary.uploader.upload(file.path, { folder: 'place' });
-                fs.unlinkSync(file.path); // Delete local file after upload
-                return result.secure_url;
+                try {
+                    const result = await cloudinary.uploader.upload(file.path);
+
+                    console.log("result ==> ",result);
+                    
+        
+                    if (result && result.secure_url) {
+                        console.log("Uploaded:", result.secure_url);
+                        return result.secure_url;
+                    } else {
+                        console.error("Upload result missing secure_url", result);
+                        throw new Error('Upload failed: No secure_url');
+                    }
+                } catch (error) {
+                    console.error("Upload failed:", error);
+                    throw error;
+                }
             });
-
-            imageUrls = await Promise.all(uploadPromises);
-            console.log("insert time ==> ",imageUrls);          
-
+        
+            console.log("Waiting for uploads...");
+        
+            try {
+                imageUrls = await Promise.all(uploadPromises);
+                console.log("All uploaded URLs:", imageUrls);
+            } catch (error) {
+                console.error("One or more uploads failed:", error);
+                // Decide: do you want to fail everything or continue with partial uploads?
+            }
         }
 
         const placeData = await PLACE.findByIdAndUpdate(req.params.id, req.body, {
@@ -104,22 +126,23 @@ exports.placeUpdate = async (req, res) => {
             destinationId,
             Images: imageUrls
         }).populate('destinationId');
+        console.log("cdmi => ",placeData);
+        
+        // if (!placeData) {
+        //     return res.status(404).json({
+        //         status: 'Fail',
+        //         message: 'Image Not Found'
+        //     });
+        // }
 
-        if (!placeData) {
-            return res.status(404).json({
-                status: 'Fail',
-                message: 'Image Not Found'
-            });
-        }
-
-        res.status(200).json({
+        return res.status(200).json({
             status: 'Success',
             message: 'Image Updated Successfully',
             data: placeData
         });
     } catch (error) {
-        console.error(error);
-        res.status(404).json({
+        // console.error(error);
+        return res.status(404).json({
             status: 'Fail',
             message: error.message
         });
