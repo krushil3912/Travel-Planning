@@ -13,7 +13,8 @@ const storage = multer.diskStorage({});
 const upload = multer({ storage: storage });
 router.post('/create', upload.array('Images', 100), placeController.placeCreate)
 router.get('/find', placeController.placeFindAll)
-router.patch('/update/:id', placeController.placeUpdate)
-// router.delete('/delete/:id',placeController.placeDelete)
+// router.patch('/update/:id', placeController.placeUpdate)
+router.patch('/update/:placeId', upload.array('Images', 100), placeController.placeUpdate)
+router.delete('/delete/:id',placeController.placeDelete)
 
 module.exports = router;

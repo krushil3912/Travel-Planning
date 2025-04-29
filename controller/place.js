@@ -79,72 +79,77 @@ exports.placeFindAll = async function (req, res, next) {
     }
 }
 
-exports.placeUpdate = async (req, res) => {
-    console.log("=======");
-    
+exports.placeUpdate = async function (req, res) {
     try {
-        const { destinationId } = req.body;
-        console.log(req.body);
+        // console.log(req.body);
         
+        const { placeId } = req.params;
+        const { destinationId, name, detail } = req.body;
         let imageUrls = [];
 
-        console.log("check");
-        if (req.files && req.files.length > 0) {
-            const uploadPromises = req.files.map(async (file) => {
-                try {
-                    const result = await cloudinary.uploader.upload(file.path);
-
-                    console.log("result ==> ",result);
-                    
-        
-                    if (result && result.secure_url) {
-                        console.log("Uploaded:", result.secure_url);
-                        return result.secure_url;
-                    } else {
-                        console.error("Upload result missing secure_url", result);
-                        throw new Error('Upload failed: No secure_url');
-                    }
-                } catch (error) {
-                    console.error("Upload failed:", error);
-                    throw error;
-                }
+        if (!placeId) {
+            return res.status(400).json({
+                status: 'Fail',
+                message: 'placeId is required.'
             });
-        
-            console.log("Waiting for uploads...");
-        
-            try {
-                imageUrls = await Promise.all(uploadPromises);
-                console.log("All uploaded URLs:", imageUrls);
-            } catch (error) {
-                console.error("One or more uploads failed:", error);
-                // Decide: do you want to fail everything or continue with partial uploads?
-            }
         }
 
-        const placeData = await PLACE.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            destinationId,
-            Images: imageUrls
-        }).populate('destinationId');
-        console.log("cdmi => ",placeData);
-        
-        // if (!placeData) {
-        //     return res.status(404).json({
-        //         status: 'Fail',
-        //         message: 'Image Not Found'
-        //     });
-        // }
+        const place = await PLACE.findById(placeId);
+        if (!place) {
+            return res.status(404).json({
+                status: 'Fail',
+                message: 'Place not found.'
+            });
+        }
 
+        // Handle image upload if new images are provided
+        if (req.files && req.files.length > 0) {
+            const uploadPromises = req.files.map(async (file) => {
+                const result = await cloudinary.uploader.upload(file.path, { folder: 'place' });
+                return result.secure_url;
+            });
+            imageUrls = await Promise.all(uploadPromises);
+        }
+
+        // Update fields
+        if (destinationId) place.destinationId = destinationId;
+        if (name) place.name = name;
+        if (detail) place.detail = detail;
+        if (imageUrls.length > 0) place.Images = imageUrls;
+
+        await place.save();
+        const populatePlace = await PLACE.findById(place._id).populate('destinationId');
         return res.status(200).json({
             status: 'Success',
-            message: 'Image Updated Successfully',
-            data: placeData
+            message: 'Place Detail Updated Successfully',
+            data: populatePlace
         });
+
     } catch (error) {
-        // console.error(error);
-        return res.status(404).json({
-            status: 'Fail',
+        console.error("Error updating place:", error);
+        return res.status(500).json({
+            status: 'Error',
             message: error.message
         });
     }
 };
+
+exports.placeDelete = async function (req, res, next) {
+    try {
+        let data = await PLACE.findById(req.params.id)
+                if (!data) {
+                    throw new Error("Place Data & Detail Not Found");
+                }
+       await PLACE.findByIdAndDelete(req.params.id)
+        
+        res.status(200).json({
+            status: "Success",
+            message: "Place Data & Detail Delete Successfully"
+        })
+    } catch (error) {
+        res.status(404).json({
+            status: "Fail",
+            message: error.message
+        })
+    }
+}
