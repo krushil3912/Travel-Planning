@@ -152,8 +152,6 @@ exports.deletePayment = async function (req, res, next) {
             });
         }
 
-        await payment.remove();
-
         res.status(200).json({
             status: "success",
             message: "Payment deleted successfully!"
@@ -168,6 +166,21 @@ exports.deletePayment = async function (req, res, next) {
 
 exports.updatePayment = async function (req, res, next) {
     try {
+        const booking = await BOOKING.findById(req.body.bookingId);
+        if (!booking) {
+            return res.status(404).json({
+                status: "fail",
+                message: "Booking not found."
+            });
+        }
+        const destination = await DESTINATION.findById(booking.destinationId);
+
+        if (req.body.amount !== destination.packagePrice) {
+            return res.status(400).json({
+                status: "fail",
+                message: `Amount entered (₹${req.body.amount}) does not match the Tour price (₹${destination.packagePrice}).`
+            });
+        }
         const payment = await PAYMENT.findById(req.params.id);
 
         if (!payment) {

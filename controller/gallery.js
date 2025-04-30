@@ -107,10 +107,26 @@ exports.imagesDelete = async (req, res) => {
 // Update Image
 exports.imagesUpdate = async (req, res) => {
     try {
-        
-        const updatedImage = await IMAGES.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('destinationId');
+        const { id } = req.params;
+        let imageUrls = [];
+        const gallery = await IMAGES.findById(id);
 
-        if (!updatedImage) {
+        // Handle image upload if new images are provided
+        if (req.files && req.files.length > 0) {
+            const uploadPromises = req.files.map(async (file) => {
+                const result = await cloudinary.uploader.upload(file.path, { folder: 'gallery' });
+                return result.secure_url;
+            });
+            imageUrls = await Promise.all(uploadPromises);
+        }
+        if (imageUrls.length > 0) gallery.Images = imageUrls;
+
+        await gallery.save();
+        const populateGallery = await IMAGES.findById(gallery._id).populate('destinationId');
+
+        // const updatedImage = await IMAGES.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('destinationId');
+
+        if (!populateGallery) {
             return res.status(404).json({
                 status: 'Fail',
                 message: 'Image Not Found'
@@ -120,7 +136,7 @@ exports.imagesUpdate = async (req, res) => {
         res.status(200).json({
             status: 'Success',
             message: 'Image Updated Successfully',
-            data: updatedImage
+            data: populateGallery
         });
     } catch (error) {
         console.error(error);

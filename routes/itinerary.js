@@ -25,7 +25,6 @@ let adminAuth = require('../middelware/adminAuth')
 router.post('/create', itineraryController.itineraryCreate)
 router.get('/find/', itineraryController.itineraryFindAll)
 router.get('/findone/:id', itineraryController.itineraryFindOne)
-router.get('/search', itineraryController.itinerarySearch)
 router.delete('/delete/:id', adminAuth.Auth, itineraryController.itineraryDelete)
 router.patch('/update/:id', adminAuth.Auth, itineraryController.itineraryUpdate)
 

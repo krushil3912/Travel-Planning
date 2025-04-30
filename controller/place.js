@@ -126,7 +126,7 @@ exports.placeUpdate = async function (req, res) {
         });
 
     } catch (error) {
-        console.error("Error updating place:", error);
+        // console.error("Error updating place:", error);
         return res.status(500).json({
             status: 'Error',
             message: error.message

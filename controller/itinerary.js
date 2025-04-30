@@ -146,28 +146,6 @@ exports.itineraryUpdate = async function (req, res, next) {
             throw new Error("Destination Not Found");
         }
 
-        const data = {
-            destinationId: newmongoose.Types.ObjectId(destinationId),  // convert to ObjectId
-            countryName: req.body.countryName,
-            detail: req.body.detail,
-            packagePrice: req.body.packagePrice,
-        }
-
-        // Upload Images to Cloudinary
-        if (req.files && req.files.length > 0) {
-            const uploadedImages = [];
-
-            for (const file of req.files) {
-                const result = await cloudinary.uploader.upload(file.path, {
-                    folder: 'itinerary_Images'
-                });
-                uploadedImages.push(result.secure_url);
-                fs.unlinkSync(file.path);  // delete local file
-            }
-
-            data.Images = uploadedImages;
-        }
-
         let id = req.params.id
 
         let itineraryData = await ITINERARY.findByIdAndUpdate(id, req.body, { new: true }).populate('destinationId')
@@ -181,34 +159,5 @@ exports.itineraryUpdate = async function (req, res, next) {
             status: 'Fail',
             message: error.message
         })
-    }
-}
-
-
-exports.itinerarySearch = async function (req, res, next) {
-    try {
-        let searchQuery = req.query.q?.trim(); // Extract query parameter
-        let itineraryData;
-
-        if (searchQuery) {
-            itineraryData = await ITINERARY.find({
-                $or: [
-                    { countryName: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
-                ]
-            });
-        } else {
-            itineraryData = await ITINERARY.find();
-        }
-
-        res.status(200).json({
-            status: "Success",
-            message: "Your Eevnt was found successfully",
-            data: itineraryData
-        })
-    } catch (error) {
-        res.status(500).json({
-            status: "Fail",
-            message: error.message
-        });
     }
 }

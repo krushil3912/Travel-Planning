@@ -8,7 +8,7 @@ router.post('/create',paymentController.createPayment)
 router.get('/find',paymentController.viewAllPayments)
 router.get('/findone/:id', paymentController.viweOnePayment);
 router.delete('/delete/:id', paymentController.deletePayment);
-router.put('/update/:id', paymentController.updatePayment);
+router.patch('/update/:id', paymentController.updatePayment);
 
 
 module.exports = router;
