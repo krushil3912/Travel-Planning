@@ -2,6 +2,10 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
 let feedbackSchema = new Schema ({
+    Images: {
+        type: [String],
+        required: true
+    },
     rating: {
         type: Number, 
         min: 0, 
@@ -10,7 +14,8 @@ let feedbackSchema = new Schema ({
         required: [true, 'Rating value is required']
     },
     comment: {
-        type: String
+        type: String,
+        required: [true, 'Comment is required']
     },
     userId :{
         type : mongoose.Schema.Types.ObjectId,
