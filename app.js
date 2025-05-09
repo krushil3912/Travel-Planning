@@ -7,14 +7,6 @@ const mongoose = require('mongoose');
 require('dotenv').config()
 let cors = require('cors')
 
-// mongoose.connect(process.env.DB_URL, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useCreateIndex: true,
-// })
-//   .then(() => console.log('Connected!'))
-//   .catch((error) => console.log(error.message))
-
 mongoose.connect('mongodb+srv://dhameliyakrushil2023:RWi3AdQUquNeI4uB@travelplanning.ngkqnvm.mongodb.net/?retryWrites=true&w=majority&appName=TravelPlanning')
   .then(() => console.log('Connected!'))
   .catch((error) => console.log(error.message));
@@ -27,6 +19,7 @@ var itineraryRouter = require('./routes/itinerary');
 var activityRouter = require('./routes/activity');
 var galleryRouter = require('./routes/gallery');
 var visaRouter = require('./routes/visa');
+var tipsRouter = require('./routes/tips');
 var placeRouter = require('./routes/place');
 var bookingRouter = require('./routes/booking');
 var feedbackRouter = require('./routes/feedback');
@@ -52,6 +45,7 @@ app.use('/itinerary', itineraryRouter);
 app.use('/activity', activityRouter);
 app.use('/gallery', galleryRouter);
 app.use('/visa', visaRouter);
+app.use('/tips', tipsRouter);
 app.use('/place', placeRouter);
 app.use('/booking', bookingRouter);
 app.use('/feedback', feedbackRouter);
